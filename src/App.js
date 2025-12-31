@@ -224,7 +224,7 @@ export default function App() {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">Attendance Pro</h1>
-                <p className="text-xs text-gray-500">Professional Attendance Tracker</p>
+                <p className="text-xs text-gray-500">By Tabish</p>
               </div>
             </div>
             
