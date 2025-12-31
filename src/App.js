@@ -13,7 +13,33 @@ export default function App() {
   const [manualDate, setManualDate] = useState(''); // DD/MM/YYYY format for display
   const [attendanceStatus, setAttendanceStatus] = useState('');
 
-  // Show save status notification
+  // Load data from sessionStorage
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem('attendance_tracker_data_v8');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          setSubjects(parsed);
+          showSaveStatus('Data loaded');
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load data', e);
+    }
+  }, []);
+
+  // Save to sessionStorage
+  useEffect(() => {
+    try {
+      sessionStorage.setItem('attendance_tracker_data_v8', JSON.stringify(subjects));
+      showSaveStatus('Data saved');
+    } catch (e) {
+      console.error('Failed to save data', e);
+      showSaveStatus('Save failed', true);
+    }
+  }, [subjects]);
+
   const showSaveStatus = (message, isError = false) => {
     setSaveStatus(message);
     setTimeout(() => setSaveStatus(''), 2000);
@@ -224,7 +250,7 @@ export default function App() {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">Attendance Pro</h1>
-                <p className="text-xs text-gray-500">By Tabish</p>
+                <p className="text-xs text-gray-500">Professional Attendance Tracker</p>
               </div>
             </div>
             
@@ -751,7 +777,7 @@ export default function App() {
       <footer className="bg-white border-t border-gray-200 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           <div className="text-center text-xs sm:text-sm text-gray-500">
-            © 2025 Attendance Pro. Data is not persisted across page refreshes.
+            © 2025 Attendance Pro. Data persists during your browser session.
           </div>
         </div>
       </footer>
