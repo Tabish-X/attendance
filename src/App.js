@@ -36,6 +36,7 @@ export default function App() {
 
   // Save to localStorage
   useEffect(() => {
+    if (subjects.length > 0) {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(subjects));
         showSaveStatus('Data saved');
@@ -238,11 +239,11 @@ export default function App() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-2 sm:gap-0 py-2 sm:h-16">
-            <div className="flex items-center space-x-3 text-center sm:text-left">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
                 <Target className="w-6 h-6 text-white" />
               </div>
@@ -252,7 +253,7 @@ export default function App() {
               </div>
             </div>
             
-            <div className="flex w-full sm:w-auto justify-center sm:justify-end gap-2 sm:gap-4">
+            <div className="flex items-center space-x-4">
               {saveStatus && (
                 <div className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium ${
                   saveStatus.includes('failed') 
@@ -323,16 +324,16 @@ export default function App() {
         </div>
       </header>
 
-      <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === 'add' && (
-          <div className="w-full">
+          <div className="max-w-4xl mx-auto">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
               <div className="text-center mb-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">Add New Subject</h2>
                 <p className="text-gray-600">Enter the name of your subject</p>
               </div>
               
-              <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex gap-4">
                 <input
                   type="text"
                   value={newSubject}
@@ -693,10 +694,10 @@ export default function App() {
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
-                      <th className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attendance %</th>
-                      <th className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attendance %</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -713,58 +714,35 @@ export default function App() {
                         : 'bg-rose-100 text-rose-800';
                       
                       return (
-                        <tr key={session.id} className="border-b last:border-b-0 sm:table-row block sm:border-0">
-                          {/* SUBJECT */}
-                          <td className="px-6 py-3 text-sm font-medium text-gray-900 block sm:table-cell">
-                            {session.subjectName}
-                          </td>
-                        
-                          {/* STATUS (VISIBLE EVERYWHERE) */}
-                          <td className="px-6 py-2 block sm:table-cell">
-                            <span
-                              className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                session.status === 'present'
-                                  ? 'bg-emerald-100 text-emerald-800'
-                                  : 'bg-rose-100 text-rose-800'
-                              }`}
-                            >
+                        <tr key={session.id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{session.subjectName}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{session.date}</td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              session.status === 'present' 
+                                ? 'bg-emerald-100 text-emerald-800' 
+                                : 'bg-rose-100 text-rose-800'
+                            }`}>
                               {session.status === 'present' ? 'Present' : 'Absent'}
                             </span>
                           </td>
-                        
-                          {/* DATE (HIDDEN ON MOBILE) */}
-                          <td className="hidden sm:table-cell px-6 py-4 text-sm text-gray-600">
-                            {session.date}
-                          </td>
-                        
-                          {/* ATTENDANCE % */}
-                          <td className="px-6 py-2 text-sm block sm:table-cell">
-                            <span
-                              className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                subjectPct >= 90
-                                  ? 'bg-emerald-100 text-emerald-800'
-                                  : subjectPct >= 75
-                                  ? 'bg-amber-100 text-amber-800'
-                                  : 'bg-rose-100 text-rose-800'
-                              }`}
-                            >
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${subjectColor}`}>
                               {subjectPct}%
                             </span>
                           </td>
-                        
-                          {/* DELETE BUTTON (ALWAYS VISIBLE) */}
-                          <td className="px-6 py-2 block sm:table-cell">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {deleteConfirm?.type === 'session' && deleteConfirm.id === session.id ? (
-                              <div className="flex gap-2">
+                              <div className="flex items-center space-x-2">
                                 <button
                                   onClick={() => deleteSession(session.subjectId, session.id)}
-                                  className="text-red-600 font-medium text-sm"
+                                  className="text-red-600 hover:text-red-800 text-sm font-medium"
                                 >
                                   Confirm
                                 </button>
                                 <button
                                   onClick={() => setDeleteConfirm(null)}
-                                  className="text-gray-600 text-sm"
+                                  className="text-gray-600 hover:text-gray-900 text-sm"
                                 >
                                   Cancel
                                 </button>
@@ -772,8 +750,8 @@ export default function App() {
                             ) : (
                               <button
                                 onClick={() => deleteSession(session.subjectId, session.id)}
-                                className="text-gray-400 hover:text-red-600"
-                                title="Delete"
+                                className="text-gray-400 hover:text-red-600 p-1"
+                                title="Delete Record"
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
@@ -790,7 +768,7 @@ export default function App() {
         )}
       </main>
 
-      <footer className="bg-white border-t border-gray-200">
+      <footer className="bg-white border-t border-gray-200 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="text-center text-sm text-gray-500">
             © 2025 Attendance Pro. Attendance is locked once recorded.
