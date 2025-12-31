@@ -34,16 +34,16 @@ export default function App() {
     loadFromStorage();
   }, []);
 
-  // Save to localStorage
+  // Save to localStorage - ALWAYS save, even when empty
   useEffect(() => {
-    if (subjects.length > 0) {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(subjects));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(subjects));
+      if (subjects.length > 0 || localStorage.getItem(STORAGE_KEY) === '[]') {
         showSaveStatus('Data saved');
-      } catch (e) {
-        console.error('Failed to save data', e);
-        showSaveStatus('Save failed', true);
       }
+    } catch (e) {
+      console.error('Failed to save data', e);
+      showSaveStatus('Save failed', true);
     }
   }, [subjects]);
 
@@ -132,7 +132,10 @@ export default function App() {
 
   const deleteSubject = (id) => {
     if (deleteConfirm?.type === 'subject' && deleteConfirm.id === id) {
-      setSubjects(prevSubjects => prevSubjects.filter(s => s.id !== id));
+      setSubjects(prevSubjects => {
+        const updatedSubjects = prevSubjects.filter(s => s.id !== id);
+        return updatedSubjects;
+      });
       setDeleteConfirm(null);
     } else {
       setDeleteConfirm({ type: 'subject', id });
@@ -381,7 +384,7 @@ export default function App() {
                               Cancel
                             </button>
                           </div>
-                        ) : (
+                        ) else (
                           <button
                             onClick={() => deleteSubject(subject.id)}
                             className="text-gray-400 hover:text-red-500 p-1 rounded-full hover:bg-red-50 transition-colors"
@@ -693,78 +696,80 @@ export default function App() {
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attendance %</th>
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {allSessions.map((session) => {
-                      const subject = subjects.find(s => s.id === session.subjectId);
-                      const subjectPct = subject && subject.totalLectures > 0 
-                        ? Math.round((subject.attendedLectures / subject.totalLectures) * 100)
-                        : 0;
-                      
-                      const subjectColor = subjectPct >= 90 
-                        ? 'bg-emerald-100 text-emerald-800' 
-                        : subjectPct >= 75 
-                        ? 'bg-amber-100 text-amber-800' 
-                        : 'bg-rose-100 text-rose-800';
-                      
-                      return (
-                        <tr key={session.id} className="hover:bg-gray-50">
-                          <td className="px-4 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-gray-900">{session.subjectName}</td>
-                          <td className="px-4 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-600">{session.date}</td>
-                          <td className="px-4 py-2 sm:px-6 sm:py-4 whitespace-nowrap">
-                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                              session.status === 'present' 
-                                ? 'bg-emerald-100 text-emerald-800' 
-                                : 'bg-rose-100 text-rose-800'
-                            }`}>
-                              {session.status === 'present' ? 'Present' : 'Absent'}
-                            </span>
-                          </td>
-                          <td className="px-4 py-2 sm:px-6 sm:py-4 whitespace-nowrap">
-                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${subjectColor}`}>
-                              {subjectPct}%
-                            </span>
-                          </td>
-                          <td className="px-4 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
-                            {deleteConfirm?.type === 'session' && deleteConfirm.id === session.id ? (
-                              <div className="flex items-center space-x-1 sm:space-x-2">
+                <div className="min-w-full inline-block">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-3 py-2 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Subject</th>
+                        <th className="px-3 py-2 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Date</th>
+                        <th className="px-3 py-2 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
+                        <th className="px-3 py-2 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Attendance %</th>
+                        <th className="px-3 py-2 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {allSessions.map((session) => {
+                        const subject = subjects.find(s => s.id === session.subjectId);
+                        const subjectPct = subject && subject.totalLectures > 0 
+                          ? Math.round((subject.attendedLectures / subject.totalLectures) * 100)
+                          : 0;
+                        
+                        const subjectColor = subjectPct >= 90 
+                          ? 'bg-emerald-100 text-emerald-800' 
+                          : subjectPct >= 75 
+                          ? 'bg-amber-100 text-amber-800' 
+                          : 'bg-rose-100 text-rose-800';
+                        
+                        return (
+                          <tr key={session.id} className="hover:bg-gray-50">
+                            <td className="px-3 py-2 sm:px-4 sm:py-3 whitespace-nowrap text-xs sm:text-sm font-medium text-gray-900 max-w-[120px] sm:max-w-none overflow-hidden text-ellipsis">{session.subjectName}</td>
+                            <td className="px-3 py-2 sm:px-4 sm:py-3 whitespace-nowrap text-xs sm:text-sm text-gray-600">{session.date}</td>
+                            <td className="px-3 py-2 sm:px-4 sm:py-3 whitespace-nowrap">
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                                session.status === 'present' 
+                                  ? 'bg-emerald-100 text-emerald-800' 
+                                  : 'bg-rose-100 text-rose-800'
+                              }`}>
+                                {session.status === 'present' ? 'Present' : 'Absent'}
+                              </span>
+                            </td>
+                            <td className="px-3 py-2 sm:px-4 sm:py-3 whitespace-nowrap">
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${subjectColor}`}>
+                                {subjectPct}%
+                              </span>
+                            </td>
+                            <td className="px-3 py-2 sm:px-4 sm:py-3 whitespace-nowrap text-xs sm:text-sm text-gray-500">
+                              {deleteConfirm?.type === 'session' && deleteConfirm.id === session.id ? (
+                                <div className="flex items-center space-x-1 sm:space-x-2">
+                                  <button
+                                    onClick={() => deleteSession(session.subjectId, session.id)}
+                                    className="text-red-600 hover:text-red-800 text-xs sm:text-sm font-medium"
+                                  >
+                                    Confirm
+                                  </button>
+                                  <button
+                                    onClick={() => setDeleteConfirm(null)}
+                                    className="text-gray-600 hover:text-gray-900 text-xs sm:text-sm"
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                              ) : (
                                 <button
                                   onClick={() => deleteSession(session.subjectId, session.id)}
-                                  className="text-red-600 hover:text-red-800 text-xs sm:text-sm font-medium"
+                                  className="text-gray-400 hover:text-red-600 p-1"
+                                  title="Delete Record"
                                 >
-                                  Confirm
+                                  <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                                 </button>
-                                <button
-                                  onClick={() => setDeleteConfirm(null)}
-                                  className="text-gray-600 hover:text-gray-900 text-xs sm:text-sm"
-                                >
-                                  Cancel
-                                </button>
-                              </div>
-                            ) : (
-                              <button
-                                onClick={() => deleteSession(session.subjectId, session.id)}
-                                className="text-gray-400 hover:text-red-600 p-1"
-                                title="Delete Record"
-                              >
-                                <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
           </div>
