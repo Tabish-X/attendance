@@ -397,7 +397,7 @@ export default function App() {
                       </div>
                       <div className="flex items-center justify-between text-xs sm:text-sm text-gray-600">
                         <span>{subject.attendedLectures} attended</span>
-                        <span className="ml-1">{subject.totalLectures} total</span>
+                        <span className="ml-2">{subject.totalLectures} total</span>
                       </div>
                     </div>
                   ))}
