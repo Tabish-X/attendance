@@ -249,7 +249,7 @@ export default function App() {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">Attendance Pro</h1>
-                <p className="text-xs text-gray-500">Professional Attendance Tracker - From Tabish</p>
+                <p className="text-xs text-gray-500">Created by Tabish</p>
               </div>
             </div>
             
