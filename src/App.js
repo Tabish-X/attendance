@@ -250,11 +250,11 @@ export default function App() {
               </div>
               <div className="hidden sm:block">
                 <h1 className="text-xl font-bold text-gray-900">Attendance Pro</h1>
-                <p className="text-xs text-gray-500">Professional Attendance Tracker</p>
+                <p className="text-xs text-gray-500">By Tabish</p>
               </div>
               <div className="sm:hidden">
                 <h1 className="text-lg font-bold text-gray-900">Attendance Pro</h1>
-                <p className="text-xs text-gray-500">Tracker</p>
+                <p className="text-xs text-gray-500">By Tabish</p>
               </div>
             </div>
             
@@ -781,7 +781,7 @@ export default function App() {
       <footer className="bg-white border-t border-gray-200 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           <div className="text-center text-xs sm:text-sm text-gray-500">
-            © 2025 Attendance Pro. Data persists during your browser session.
+            © 2025 Attendance Pro | Tabish
           </div>
         </div>
       </footer>
