@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, CheckCircle, XCircle, Calendar, Percent, BookOpen, Users, Clock, Target, TrendingUp, TableIcon, Save } from 'lucide-react';
 
-const STORAGE_KEY = 'attendance_tracker_data_v8';
-
 export default function App() {
   const [subjects, setSubjects] = useState([]);
   const [newSubject, setNewSubject] = useState('');
@@ -15,38 +13,7 @@ export default function App() {
   const [manualDate, setManualDate] = useState(''); // DD/MM/YYYY format for display
   const [attendanceStatus, setAttendanceStatus] = useState('');
 
-  // Load data from localStorage
-  useEffect(() => {
-    const loadFromStorage = () => {
-      try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed)) {
-            setSubjects(parsed);
-            showSaveStatus('Data loaded');
-          }
-        }
-      } catch (e) {
-        console.error('Failed to load data', e);
-      }
-    };
-    loadFromStorage();
-  }, []);
-
-  // Save to localStorage - ALWAYS save, even when empty
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(subjects));
-      if (subjects.length > 0 || localStorage.getItem(STORAGE_KEY) === '[]') {
-        showSaveStatus('Data saved');
-      }
-    } catch (e) {
-      console.error('Failed to save data', e);
-      showSaveStatus('Save failed', true);
-    }
-  }, [subjects]);
-
+  // Show save status notification
   const showSaveStatus = (message, isError = false) => {
     setSaveStatus(message);
     setTimeout(() => setSaveStatus(''), 2000);
@@ -127,16 +94,19 @@ export default function App() {
         sessions: []
       }]);
       setNewSubject('');
+      showSaveStatus('Subject added successfully!');
+    } else if (!newSubject.trim()) {
+      showSaveStatus('Please enter a subject name', true);
+    } else {
+      showSaveStatus('Subject already exists', true);
     }
   };
 
   const deleteSubject = (id) => {
     if (deleteConfirm?.type === 'subject' && deleteConfirm.id === id) {
-      setSubjects(prevSubjects => {
-        const updatedSubjects = prevSubjects.filter(s => s.id !== id);
-        return updatedSubjects;
-      });
+      setSubjects(prevSubjects => prevSubjects.filter(s => s.id !== id));
       setDeleteConfirm(null);
+      showSaveStatus('Subject deleted successfully!');
     } else {
       setDeleteConfirm({ type: 'subject', id });
     }
@@ -144,7 +114,7 @@ export default function App() {
 
   const saveAttendance = () => {
     if (!selectedSubjectId || !selectedDate || !attendanceStatus) {
-      alert('Please fill in all fields: Subject, Date, and Attendance Status');
+      showSaveStatus('Please fill in all fields', true);
       return;
     }
     
@@ -178,6 +148,7 @@ export default function App() {
     setSelectedDate('');
     setManualDate('');
     setAttendanceStatus('');
+    showSaveStatus('Attendance saved successfully!');
   };
 
   const deleteSession = (subjectId, sessionId) => {
@@ -198,6 +169,7 @@ export default function App() {
         return subject;
       }));
       setDeleteConfirm(null);
+      showSaveStatus('Session deleted successfully!');
     } else {
       setDeleteConfirm({ type: 'session', id: sessionId, subjectId });
     }
@@ -259,7 +231,7 @@ export default function App() {
             <div className="flex items-center space-x-4">
               {saveStatus && (
                 <div className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium ${
-                  saveStatus.includes('failed') 
+                  saveStatus.includes('failed') || saveStatus.includes('Error') 
                     ? 'bg-red-100 text-red-800' 
                     : 'bg-green-100 text-green-800'
                 }`}>
@@ -384,7 +356,7 @@ export default function App() {
                               Cancel
                             </button>
                           </div>
-                        ) else (
+                        ) : (
                           <button
                             onClick={() => deleteSubject(subject.id)}
                             className="text-gray-400 hover:text-red-500 p-1 rounded-full hover:bg-red-50 transition-colors"
@@ -779,7 +751,7 @@ export default function App() {
       <footer className="bg-white border-t border-gray-200 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           <div className="text-center text-xs sm:text-sm text-gray-500">
-            © 2025 Attendance Pro. Attendance is locked once recorded.
+            © 2025 Attendance Pro. Data is not persisted across page refreshes.
           </div>
         </div>
       </footer>
