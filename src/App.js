@@ -248,9 +248,13 @@ export default function App() {
               <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
                 <Target className="w-6 h-6 text-white" />
               </div>
-              <div>
+              <div className="hidden sm:block">
                 <h1 className="text-xl font-bold text-gray-900">Attendance Pro</h1>
                 <p className="text-xs text-gray-500">Professional Attendance Tracker</p>
+              </div>
+              <div className="sm:hidden">
+                <h1 className="text-lg font-bold text-gray-900">Attendance Pro</h1>
+                <p className="text-xs text-gray-500">Tracker</p>
               </div>
             </div>
             
@@ -720,7 +724,7 @@ export default function App() {
                         
                         return (
                           <tr key={session.id} className="hover:bg-gray-50">
-                            <td className="px-3 py-2 sm:px-4 sm:py-3 whitespace-nowrap text-xs sm:text-sm font-medium text-gray-900 max-w-[120px] sm:max-w-none overflow-hidden text-ellipsis">{session.subjectName}</td>
+                            <td className="px-3 py-2 sm:px-4 sm:py-3 whitespace-nowrap text-xs sm:text-sm font-medium text-gray-900 max-w-[100px] sm:max-w-none overflow-hidden text-ellipsis">{session.subjectName}</td>
                             <td className="px-3 py-2 sm:px-4 sm:py-3 whitespace-nowrap text-xs sm:text-sm text-gray-600">{session.date}</td>
                             <td className="px-3 py-2 sm:px-4 sm:py-3 whitespace-nowrap">
                               <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
