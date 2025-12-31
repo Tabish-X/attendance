@@ -714,35 +714,58 @@ export default function App() {
                         : 'bg-rose-100 text-rose-800';
                       
                       return (
-                        <tr key={session.id} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{session.subjectName}</td>
-                          <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-600">{session.date}</td>
-                          <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap">
-                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              session.status === 'present' 
-                                ? 'bg-emerald-100 text-emerald-800' 
-                                : 'bg-rose-100 text-rose-800'
-                            }`}>
+                        <tr key={session.id} className="border-b last:border-b-0 sm:table-row block sm:border-0">
+                          {/* SUBJECT */}
+                          <td className="px-6 py-3 text-sm font-medium text-gray-900 block sm:table-cell">
+                            {session.subjectName}
+                          </td>
+                        
+                          {/* STATUS (VISIBLE EVERYWHERE) */}
+                          <td className="px-6 py-2 block sm:table-cell">
+                            <span
+                              className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                session.status === 'present'
+                                  ? 'bg-emerald-100 text-emerald-800'
+                                  : 'bg-rose-100 text-rose-800'
+                              }`}
+                            >
                               {session.status === 'present' ? 'Present' : 'Absent'}
                             </span>
                           </td>
-                          <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap">
-                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${subjectColor}`}>
+                        
+                          {/* DATE (HIDDEN ON MOBILE) */}
+                          <td className="hidden sm:table-cell px-6 py-4 text-sm text-gray-600">
+                            {session.date}
+                          </td>
+                        
+                          {/* ATTENDANCE % */}
+                          <td className="px-6 py-2 text-sm block sm:table-cell">
+                            <span
+                              className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                subjectPct >= 90
+                                  ? 'bg-emerald-100 text-emerald-800'
+                                  : subjectPct >= 75
+                                  ? 'bg-amber-100 text-amber-800'
+                                  : 'bg-rose-100 text-rose-800'
+                              }`}
+                            >
                               {subjectPct}%
                             </span>
                           </td>
-                          <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        
+                          {/* DELETE BUTTON (ALWAYS VISIBLE) */}
+                          <td className="px-6 py-2 block sm:table-cell">
                             {deleteConfirm?.type === 'session' && deleteConfirm.id === session.id ? (
-                              <div className="flex items-center space-x-2">
+                              <div className="flex gap-2">
                                 <button
                                   onClick={() => deleteSession(session.subjectId, session.id)}
-                                  className="text-red-600 hover:text-red-800 text-sm font-medium"
+                                  className="text-red-600 font-medium text-sm"
                                 >
                                   Confirm
                                 </button>
                                 <button
                                   onClick={() => setDeleteConfirm(null)}
-                                  className="text-gray-600 hover:text-gray-900 text-sm"
+                                  className="text-gray-600 text-sm"
                                 >
                                   Cancel
                                 </button>
@@ -750,8 +773,8 @@ export default function App() {
                             ) : (
                               <button
                                 onClick={() => deleteSession(session.subjectId, session.id)}
-                                className="text-gray-400 hover:text-red-600 p-1"
-                                title="Delete Record"
+                                className="text-gray-400 hover:text-red-600"
+                                title="Delete"
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
