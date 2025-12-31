@@ -324,7 +324,7 @@ export default function App() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === 'add' && (
           <div className="max-w-4xl mx-auto">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
@@ -768,7 +768,7 @@ export default function App() {
         )}
       </main>
 
-      <footer className="bg-white border-t border-gray-200 mt-16">
+      <footer className="bg-white border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="text-center text-sm text-gray-500">
             © 2025 Attendance Pro. Attendance is locked once recorded.
