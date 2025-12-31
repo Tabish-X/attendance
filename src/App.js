@@ -242,7 +242,7 @@ export default function App() {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0 py-3 sm:h-16">
+          <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-2 sm:gap-0 py-2 sm:h-16">
             <div className="flex items-center space-x-3 text-center sm:text-left">
               <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
                 <Target className="w-6 h-6 text-white" />
@@ -253,7 +253,7 @@ export default function App() {
               </div>
             </div>
             
-            <div className="flex items-center space-x-4">
+            <div className="flex w-full sm:w-auto justify-center sm:justify-end gap-2 sm:gap-4">
               {saveStatus && (
                 <div className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium ${
                   saveStatus.includes('failed') 
@@ -333,7 +333,7 @@ export default function App() {
                 <p className="text-gray-600">Enter the name of your subject</p>
               </div>
               
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <input
                   type="text"
                   value={newSubject}
