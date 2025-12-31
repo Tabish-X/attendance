@@ -36,7 +36,6 @@ export default function App() {
 
   // Save to localStorage
   useEffect(() => {
-    if (subjects.length > 0) {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(subjects));
         showSaveStatus('Data saved');
