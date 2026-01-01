@@ -13,10 +13,10 @@ export default function App() {
   const [manualDate, setManualDate] = useState(''); // DD/MM/YYYY format for display
   const [attendanceStatus, setAttendanceStatus] = useState('');
 
-  // Load data from sessionStorage
+  // Load data from localStorage (persists after browser close)
   useEffect(() => {
     try {
-      const saved = sessionStorage.getItem('attendance_tracker_data_v8');
+      const saved = localStorage.getItem('attendance_tracker_data_v8');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) {
@@ -25,18 +25,38 @@ export default function App() {
         }
       }
     } catch (e) {
-      console.error('Failed to load data', e);
+      console.error('Failed to load data from localStorage', e);
+      // Fallback to sessionStorage if localStorage fails
+      try {
+        const sessionSaved = sessionStorage.getItem('attendance_tracker_data_v8');
+        if (sessionSaved) {
+          const parsed = JSON.parse(sessionSaved);
+          if (Array.isArray(parsed)) {
+            setSubjects(parsed);
+            showSaveStatus('Data loaded from session');
+          }
+        }
+      } catch (sessionError) {
+        console.error('Failed to load data from sessionStorage', sessionError);
+      }
     }
   }, []);
 
-  // Save to sessionStorage
+  // Save to localStorage (persists after browser close)
   useEffect(() => {
     try {
-      sessionStorage.setItem('attendance_tracker_data_v8', JSON.stringify(subjects));
-      showSaveStatus('Data saved');
+      localStorage.setItem('attendance_tracker_data_v8', JSON.stringify(subjects));
+      showSaveStatus('Data saved permanently');
     } catch (e) {
-      console.error('Failed to save data', e);
-      showSaveStatus('Save failed', true);
+      console.error('Failed to save to localStorage', e);
+      // Fallback to sessionStorage if localStorage fails
+      try {
+        sessionStorage.setItem('attendance_tracker_data_v8', JSON.stringify(subjects));
+        showSaveStatus('Data saved for this session');
+      } catch (sessionError) {
+        console.error('Failed to save to sessionStorage', sessionError);
+        showSaveStatus('Save failed', true);
+      }
     }
   }, [subjects]);
 
