@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal Study Manager</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+  <header>
+    <h1>Personal Study Manager</h1>
+    <div class="nav-container">
+      <button class="nav-btn active" data-section="subjects">Subjects</button>
+      <button class="nav-btn" data-section="topics">Topics</button>
+      <button class="nav-btn" data-section="notes">Notes</button>
+      <button class="nav-btn" data-section="files">Files</button>
+      <button id="logout-btn" class="nav-btn logout">Logout</button>
+    </div>
+  </header>
+
+  <section id="subjects-section" class="content-section active">
+    <h2>Add New Subject</h2>
+    <div class="form-group">
+      <input type="text" id="subject-name" placeholder="Subject name">
+    </div>
+    <button id="add-subject-btn">Add Subject</button>
+    <h3 style="margin-top:20px">Your Subjects</h3>
+    <div id="subjects-list"></div>
+  </section>
+
+  <section id="topics-section" class="content-section">
+    <h2>Add Topic</h2>
+    <div class="form-group">
+      <input type="text" id="topic-name" placeholder="Topic name">
+    </div>
+    <button id="add-topic-btn">Add Topic</button>
+    <h3 style="margin-top:20px">Your Topics</h3>
+    <div id="topics-list"></div>
+  </section>
+
+  <section id="notes-section" class="content-section">
+    <h2>Add Note</h2>
+    <div class="form-group">
+      <input type="text" id="note-title" placeholder="Note title">
+    </div>
+    <div class="form-group">
+      <textarea id="note-content" placeholder="Note content…"></textarea>
+    </div>
+    <button id="add-note-btn">Add Note</button>
+    <h3 style="margin-top:20px">Your Notes</h3>
+    <div id="notes-list"></div>
+  </section>
+
+  <section id="files-section" class="content-section">
+    <h2>Upload Files</h2>
+    <div class="form-group">
+      <select id="subject-selector"></select>
+    </div>
+    <div class="form-group">
+      <input type="file" id="file-upload" multiple>
+    </div>
+    <button id="upload-files-btn">Upload Files</button>
+    <h3 style="margin-top:20px">Your Files</h3>
+    <div id="uploaded-files-list"></div>
+  </section>
+
+</div>
+
+<!-- Firebase bootstrap: initialise app, expose globals, then load script.js -->
+<script type="module">
+  import { initializeApp }                          from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+  import { getAuth, signOut, onAuthStateChanged }   from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+  import { getFirestore }                           from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey:            "AIzaSyDmrMLyQjoTrc8mdriwvym4Laxa0IzaKyU",
+    authDomain:        "login01-page.firebaseapp.com",
+    projectId:         "login01-page",
+    storageBucket:     "login01-page.firebasestorage.app",
+    messagingSenderId: "633033907458",
+    appId:             "1:633033907458:web:a99cdae3895ff87794f61b",
+    measurementId:     "G-VQ5ZLP43T3"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Expose Firestore instance globally so script.js can use it
+  window.firestoreDb = getFirestore(app);
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+    } else {
+      // Expose current user globally so script.js can key data by UID
+      window.currentUser = user;
+    }
+  });
+
+  document.getElementById("logout-btn").addEventListener("click", () => {
+    signOut(auth).then(() => {
+      window.location.href = "login.html";
+    });
+  });
+</script>
+
+<!-- script.js is now also a module (uses ES imports internally) -->
+<script type="module" src="script.js"></script>
+
+</body>
+</html>
